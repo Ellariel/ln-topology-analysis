@@ -1,32 +1,65 @@
+from pycountry_convert import country_alpha2_to_continent_code, country_name_to_country_alpha2
 import networkx as nx
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
-import pickle, os, random
+import pickle, os, random, json
 import utils
 
 random.seed(13)
 np.random.seed(13)
 
+continents = {
+    'NA': 'North America',
+    'SA': 'South America', 
+    'AS': 'Asia',
+    'OC': 'Australia',
+    'AF': 'Africa',
+    'EU': 'Europe'
+}
+
 with open('ln-graph-snapshot.gpickle', 'rb') as f:
     G = pickle.load(f)
     print(f'nodes: {len(G.nodes)} edges: {len(G.edges)}')
-    
-if os.path.exists('iso_codes.csv'):
-  iso = pd.read_csv('iso_codes.csv', sep=';')
-  iso = iso[['Continent', 'ISO3']].set_index('ISO3').to_dict()['Continent']
-  
-short_dict = {'Europe' : 'EU',
-              'Americas' : 'AM',
-              'Asia' : 'AS',
-              'Oceania' : 'OC',
-              'Africa' : 'AF'}
 
 for i in G.nodes:
-  if 'locations' in G.nodes[i] and 'country_code_iso3' in G.nodes[i]['locations']:
-    c = G.nodes[i]['locations']['country_code_iso3']
-    if c in iso and iso[c] in short_dict:
-      G.nodes[i]['locations']['continent_code'] = short_dict[iso[c]]
+    if 'locations' in G.nodes[i] and 'country_code_iso3' in G.nodes[i]['locations']:
+      try:
+        c = G.nodes[i]['locations']['country_code_iso3']
+        c = country_alpha2_to_continent_code(country_name_to_country_alpha2(c))
+        G.nodes[i]['locations']['continent_code'] = c
+      except:
+        del G.nodes[i]['locations']['country_code_iso3']
+      
+if os.path.exists('global_energy_mix.json'):
+    with open('global_energy_mix.json', 'r') as f:
+      global_energy_mix = json.load(f)
+    if not 'world_average' in global_energy_mix:
+        world_average = []
+        continents = []
+        for k, v in global_energy_mix.items():
+          try:
+            c = country_alpha2_to_continent_code(country_name_to_country_alpha2(k))
+            global_energy_mix[k]['continent'] = c
+            continents.append(c)
+          except:
+            pass
+          if 'carbon_intensity' in v:
+              world_average.append(v['carbon_intensity'])
+
+        continents = list(set(continents))
+        continent_average = {}    
+        for c in continents:
+          g = []
+          for k, v in global_energy_mix.items():
+            if 'continent' in v and c == v['continent']:
+              g.append(v['carbon_intensity'])
+          continent_average[c] = np.mean(g)
+          
+        global_energy_mix['continent_average'] = continent_average
+        global_energy_mix['world_average'] = np.mean(world_average)
+    with open('global_energy_mix.json', 'w') as f:
+        json.dump(global_energy_mix, f)
   
 T = utils.generate_tx(G, 10000)
 for i in T:
