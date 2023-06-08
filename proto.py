@@ -61,7 +61,8 @@ def cost_function(G, u, v, amount, proto_type='LND', global_energy_mix=None):
         cost = (amount + fee) * G.edges[u, v]['delay'] * C_RISK_FACTOR + RISK_BIAS
     elif proto_type == 'GHG':  
         cost = (amount + fee) * G.edges[u, v]['delay'] * LND_RISK_FACTOR + fee
-        cost += utils.get_ghg_costs(G, u, v, global_energy_mix)
+        cost += utils.get_ghg_costs(G, u, v, global_energy_mix) / 10000
+        cost = 0 if cost < 0 else cost
     else:
         cost = 1
     return cost
