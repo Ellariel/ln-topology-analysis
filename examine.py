@@ -15,7 +15,7 @@ with open('ln-graph-prepared.pickle', 'rb') as f:
     T = f['transactions']
     print(f'transactions: {len(T)}')
     
-with open('global_energy_mix.json', 'rb') as f:
+with open('global_energy_mix.json', 'r') as f:
     global_energy_mix = json.load(f)
 
 alg = ['LND', 'CLN', 'ECL', 'GHG']
@@ -23,8 +23,7 @@ alg = ['LND', 'CLN', 'ECL', 'GHG']
 if G and T:
     for a in tqdm(alg):
         results = []
-        i = 0
-        for t in tqdm(T, desc=a, leave=False):
+        for t in tqdm(T[:100], desc=a, leave=False):
             path = utils.get_shortest_path(G, t[0], t[1], t[2], proto_type=a, 
                                         global_energy_mix=global_energy_mix)
             if path:

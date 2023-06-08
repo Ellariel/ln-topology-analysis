@@ -34,36 +34,30 @@ def get_country(G, id):
         return c['country_code_iso3'] 
 
 def get_geodist(G, path):
-        for p in range(len(path)-1):
-            e = G.get_edge_data(path[p], path[p+1])
-            loc = [get_coords(G, p) for p in path]
-            #loc = drop_none(loc)
-            dist = []
-            for c in range(len(loc)-1):
-                dist.append(geodesic(loc[c], loc[c+1]).km)
-            return np.sum(dist)
+        loc = [get_coords(G, p) for p in path]
+        loc = drop_none(loc)
+        dist = []
+        for c in range(len(loc)-1):
+            dist.append(geodesic(loc[c], loc[c+1]).km)
+        return np.sum(dist)
 
 def get_continent_hops(G, path):
-        for p in range(len(path)-1):
-            e = G.get_edge_data(path[p], path[p+1])
-            loc = [get_continent(G, p) for p in path]
-            loc = drop_none(loc)
-            hops = 0
-            for c in range(len(loc)-1):
-                if loc[c] != loc[c+1]:
+        loc = [get_continent(G, p) for p in path]
+        loc = drop_none(loc)
+        hops = 0
+        for c in range(len(loc)-1):
+            if loc[c] != loc[c+1]:
                   hops += 1
-            return hops
+        return hops
 
 def get_country_hops(G, path):
-        for p in range(len(path)-1):
-            e = G.get_edge_data(path[p], path[p+1])
-            loc = [get_country(G, p) for p in path]
-            loc = drop_none(loc)
-            hops = 0
-            for c in range(len(loc)-1):
-                if loc[c] != loc[c+1]:
-                  hops += 1
-            return hops
+        loc = [get_country(G, p) for p in path]
+        loc = drop_none(loc)
+        hops = 0
+        for c in range(len(loc)-1):
+            if loc[c] != loc[c+1]:
+                hops += 1
+        return hops
 
 def get_ghg(G, id, global_energy_mix):
     country, continent = get_country(G, id), get_continent(G, id)
