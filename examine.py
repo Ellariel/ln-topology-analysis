@@ -18,7 +18,7 @@ with open('ln-graph-prepared.pickle', 'rb') as f:
 with open('global_energy_mix.json', 'r') as f:
     global_energy_mix = json.load(f)
 
-alg = ['LND', 'CLN', 'ECL', 'GHG(LND)', 'GHG(CLN)', 'GHG(ECL)']
+alg = ['LND', 'CLN', 'ECL', 'GHG(LND)', 'GHG(CLN)', 'GHG(ECL)', 'CYH(LND)', 'CYH(CLN)', 'CYH(ECL)']
 
 if G and T:
     for a in tqdm(alg):
