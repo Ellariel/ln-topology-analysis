@@ -78,14 +78,6 @@ def get_total_ghg(G, path, global_energy_mix):
 def get_ghg_costs(G, u, v, global_energy_mix):
     return get_ghg(G, v, global_energy_mix) - get_ghg(G, u, global_energy_mix)
 
-def get_shortest_path(G, u, v, amount, proto_type='LND', global_energy_mix=None):
-    def weight_function(u, v, e):
-      return proto.cost_function(G, u, v, amount, proto_type=proto_type, global_energy_mix=global_energy_mix)
-    try:
-      return nx.shortest_path(G, u, v, weight=weight_function)
-    except:
-      pass
-
 def get_path_params(G, path, amount, global_energy_mix=None):
     a = amount
     p = path
