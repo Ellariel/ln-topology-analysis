@@ -23,7 +23,7 @@ alg = ['LND', 'CLN', 'ECL', 'GHG']
 if G and T:
     for a in tqdm(alg):
         results = []
-        for t in tqdm(T[:100], desc=a, leave=False):
+        for t in tqdm(T, desc=a, leave=False):
             path = proto.get_shortest_path(G, t[0], t[1], t[2], proto_type=a, 
                                         global_energy_mix=global_energy_mix)
             if path:

@@ -72,7 +72,7 @@ def get_shortest_path(G, u, v, amount, proto_type='LND', global_energy_mix=None)
     def weight_function(u, v, e):
       return cost_function(G, u, v, amount, proto_type=proto_type, global_energy_mix=global_energy_mix)
     try:
-      return list(islice(nx.shortest_simple_paths(G, u, v, weight=weight_function), 5))[random.randint(0, 4)]
-      #return nx.shortest_path(G, u, v, weight=weight_function)
+      #return list(islice(nx.shortest_simple_paths(G, u, v, weight=weight_function), 5))[random.randint(0, 4)]
+      return nx.shortest_path(G, u, v, weight=weight_function)
     except:
       pass
