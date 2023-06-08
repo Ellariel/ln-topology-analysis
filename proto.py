@@ -95,6 +95,25 @@ def cost_function(G, u, v, amount, proto_type='LND', global_energy_mix=None):
         cost = fee * (n_delay * DELAY_RATIO + n_capacity * CAPACITY_RATIO + n_age * AGE_RATIO) 
         cost += utils.get_country_hops(G, [u, v]) / 10
         
+    elif proto_type == 'GHG+CYH(LND)':  
+        cost = (amount + fee) * G.edges[u, v]['delay'] * LND_RISK_FACTOR + fee
+        cost += utils.get_country_hops(G, [u, v]) / 10
+        cost += utils.get_ghg_costs(G, u, v, global_energy_mix) / 1000
+        
+    elif proto_type == 'GHG+CYH(CLN)':  
+        fee = fee * (1 + DEFAULT_FUZZ * FUZZ)
+        cost = (amount + fee) * G.edges[u, v]['delay'] * C_RISK_FACTOR + RISK_BIAS
+        cost += utils.get_country_hops(G, [u, v]) / 10
+        cost += utils.get_ghg_costs(G, u, v, global_energy_mix) / 1000
+        
+    elif proto_type == 'GHG+CYH(ECL)':  
+        n_capacity = 1 - (normalize(G.edges[u, v]['capacity_sat'], MIN_CAP, MAX_CAP))
+        n_age = normalize(BLOCK_HEIGHT - G.edges[u, v]['age'], MIN_AGE, MAX_AGE)
+        n_delay = normalize(G.edges[u, v]['delay'], MIN_DELAY, MAX_DELAY)
+        cost = fee * (n_delay * DELAY_RATIO + n_capacity * CAPACITY_RATIO + n_age * AGE_RATIO) 
+        cost += utils.get_country_hops(G, [u, v]) / 10
+        cost += utils.get_ghg_costs(G, u, v, global_energy_mix) / 1000
+        
     else:
         cost = 1
     cost = 0 if cost < 0 else cost
