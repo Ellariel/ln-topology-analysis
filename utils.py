@@ -76,7 +76,7 @@ def get_total_ghg(G, path, global_energy_mix):
 # Carbon intensity of electricity (gCO2/kWh)
 # https://github.com/mlco2/codecarbon/blob/master/codecarbon/data/private_infra/global_energy_mix.json
 def get_ghg_costs(G, u, v, global_energy_mix):
-    return get_ghg(G, v, global_energy_mix) - get_ghg(G, u, global_energy_mix)
+    return (get_ghg(G, v, global_energy_mix) - get_ghg(G, u, global_energy_mix)) / 1000
 
 def get_path_params(G, path, amount, global_energy_mix=None):
     a = amount
@@ -90,19 +90,25 @@ def get_path_params(G, path, amount, global_energy_mix=None):
     return {'path' : p,
             'dist' : len(p),
             'geodist' : get_geodist(G, p),
-            'ghg' : get_total_ghg(G, p, global_energy_mix),
+            'sum_ghg' : get_total_ghg(G, p, global_energy_mix),
+            'avg_ghg' : get_total_ghg(G, p, global_energy_mix) / len(p),
             'delay' : delay,
             'feeratio' : a / amount,
             'feerate' : a / amount - 1,
             'amount' : a,
             'intercontinental_hops' : get_continent_hops(G, p),
-            'intercountry_hops' : get_country_hops(G, p)}
+            'intercountry_hops' : get_country_hops(G, p),
+            'start_country': get_country(G, p[0]),
+            'end_country': get_country(G, p[-1]),
+            'start_continent': get_continent(G, p[0]),
+            'end_continent': get_continent(G, p[-1]),
+            }
 
 def generate_tx(G, transacitons_count=1000, seed=2, centralized=False):
     log_space = np.logspace(0, 7, 10**6)
     ##
     def random_amount(): # SAT
-        # Возвращает массив значений от 10^0 = 1 до 10^7, равномерно распределенных на логарифмической шкале
+        # Возвращает массив значений от 10^0 = 1 до 10^6, равномерно распределенных на логарифмической шкале
         # https://coingate.com/blog/post/lightning-network-bitcoin-stats-progress
         # The highest transaction processed is 0.03967739 BTC, while the lowest is 0.000001 BTC. The average payment size is 0.00508484 BTC;
         # highest: 3967739.0 SAT
