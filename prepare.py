@@ -1,15 +1,14 @@
 from pycountry_convert import country_alpha2_to_continent_code, country_name_to_country_alpha2
 import networkx as nx
-import pandas as pd
 import numpy as np
-from tqdm import tqdm
 import pickle, os, random, json
+
 import utils
 
 random.seed(13)
 np.random.seed(13)
 
-continents = {
+_continents = {
     'NA': 'North America',
     'SA': 'South America', 
     'AS': 'Asia',

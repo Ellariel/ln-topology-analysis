@@ -1,8 +1,8 @@
 import networkx as nx
-import pandas as pd
 import numpy as np
 from tqdm import tqdm
-import pickle, os, json, random
+import pickle, json, random
+
 import utils, proto
 
 random.seed(13)
@@ -18,7 +18,7 @@ with open('ln-graph-prepared.pickle', 'rb') as f:
 with open('global_energy_mix.json', 'r') as f:
     global_energy_mix = json.load(f)
 
-alg = ['LND', 'CLN', 'ECL', 'GHG(LND)', 'GHG(CLN)', 'GHG(ECL)']#, 'CYH(LND)', 'CYH(CLN)', 'CYH(ECL)', 'GHG+CYH(LND)', 'GHG+CYH(CLN)', 'GHG+CYH(ECL)']
+alg = ['LND', 'CLN', 'ECL', 'H(LND)', 'H(CLN)', 'H(ECL)']
 
 if G and T:
     for a in tqdm(alg):
