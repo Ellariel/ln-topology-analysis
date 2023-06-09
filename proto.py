@@ -70,7 +70,7 @@ def cost_function(G, u, v, amount, proto_type='LND', global_energy_mix=None):
     elif proto_type == 'H(CLN)':  
         fee = fee * (1 + DEFAULT_FUZZ * FUZZ)
         cost = (amount + fee) * G.edges[u, v]['delay'] * C_RISK_FACTOR + RISK_BIAS
-        cost += utils.get_ghg_costs(G, u, v, global_energy_mix) * 10000 # scaled because of higher average value of CLN cost function
+        cost += utils.get_ghg_costs(G, u, v, global_energy_mix) * 100000 # scaled because of higher average value of CLN cost function
         
     elif proto_type == 'H(ECL)':  
         n_capacity = 1 - (normalize(G.edges[u, v]['capacity_sat'], MIN_CAP, MAX_CAP))
