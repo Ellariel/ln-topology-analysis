@@ -1,7 +1,7 @@
 import networkx as nx
 import numpy as np
 from tqdm import tqdm
-import pickle, json, random
+import pickle, json, random, os
 
 import utils, proto
 
@@ -22,15 +22,17 @@ alg = ['LND', 'CLN', 'ECL', 'H(LND)', 'H(CLN)', 'H(ECL)']
 
 if G and T:
     for a in tqdm(alg):
-        results = []
-        for t in tqdm(T, desc=a, leave=False):
-            path = proto.get_shortest_path(G, t[0], t[1], t[2], proto_type=a, 
-                                        global_energy_mix=global_energy_mix)
-            if path:
-                r = utils.get_path_params(G, path, t[2], global_energy_mix=global_energy_mix)
-                results.append((t, r))
-            else:
-                results.append((t, None))
-        with open(f'{a}-results.pickle', 'wb') as f:
-            pickle.dump(results, f)
+        f = f'{a}-results.pickle'
+        if not os.path.exists(f):
+            results = []
+            for t in tqdm(T, desc=a, leave=False):
+                path = proto.get_shortest_path(G, t[0], t[1], t[2], proto_type=a, 
+                                            global_energy_mix=global_energy_mix)
+                if path:
+                    r = utils.get_path_params(G, path, t[2], global_energy_mix=global_energy_mix)
+                    results.append((t, r))
+                else:
+                    results.append((t, None))
+            with open(f, 'wb') as f:
+                pickle.dump(results, f)
     
