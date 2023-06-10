@@ -64,7 +64,7 @@ def get_ghg(G, id, global_energy_mix):
     ghg = global_energy_mix[country]['carbon_intensity'] if country in global_energy_mix and 'carbon_intensity' in global_energy_mix[country] else False
     ghg = global_energy_mix['continent_average'][continent] if not ghg and continent and 'continent_average' in global_energy_mix and continent in global_energy_mix['continent_average'] else ghg
     ghg = global_energy_mix['world_average'] if not ghg and 'world_average' in global_energy_mix else ghg
-    ghg = 726 if not ghg else ghg
+    ghg = 436 if not ghg else ghg
     return ghg
 
 def get_total_ghg(G, path, global_energy_mix):
