@@ -89,6 +89,7 @@ def get_path_params(G, path, amount, global_energy_mix=None):
             'dist' : len(p),
             'geodist' : get_geodist(G, p),
             'sum_ghg' : get_total_ghg(G, p, global_energy_mix),
+            'avg_ghg' : get_total_ghg(G, p, global_energy_mix) / len(p),
             'delay' : delay,
             'feeratio' : a / amount,
             'feerate' : a / amount - 1,
