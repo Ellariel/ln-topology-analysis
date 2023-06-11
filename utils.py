@@ -72,6 +72,12 @@ def get_total_ghg(G, path, global_energy_mix):
         for p in path:
             ghg += get_ghg(G, p, global_energy_mix)
         return ghg
+    
+def get_delta_ghg(G, path, global_energy_mix):
+        ghg = 0
+        for i in range(len(path)-1):
+            ghg += get_ghg(G, path[i+1], global_energy_mix) - get_ghg(G, path[i], global_energy_mix)
+        return ghg
 
 def get_ghg_costs(G, u, v, global_energy_mix):
     return (get_ghg(G, v, global_energy_mix) - get_ghg(G, u, global_energy_mix)) / 1000
@@ -90,6 +96,7 @@ def get_path_params(G, path, amount, global_energy_mix=None):
             'geodist' : get_geodist(G, p),
             'sum_ghg' : get_total_ghg(G, p, global_energy_mix),
             'avg_ghg' : get_total_ghg(G, p, global_energy_mix) / len(p),
+            'delta_ghg' : get_delta_ghg(G, p, global_energy_mix),
             'delay' : delay,
             'feeratio' : a / amount,
             'feerate' : a / amount - 1,
