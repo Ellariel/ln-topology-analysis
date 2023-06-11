@@ -12,13 +12,15 @@ with open('ln-graph-prepared.pickle', 'rb') as f:
     f = pickle.load(f)
     G = f['directed_graph']
     print(f'nodes: {len(G.nodes)} edges: {len(G.edges)}')
-    T = f['transactions']
+    T = f['transactions'][:1000] ####
     print(f'transactions: {len(T)}')
     
 with open('global_energy_mix.json', 'r') as f:
     global_energy_mix = json.load(f)
 
 alg = ['LND', 'CLN', 'ECL', 'H(LND)', 'H(CLN)', 'H(ECL)']
+metrics = ['dist', 'geodist', 'avg_geodist', 'sum_ghg', 'avg_ghg', 'delay', 'feeratio', 'feerate',
+           'intercontinental_hops', 'intercountry_hops', 'avg_intercountry_hops', 'avg_intercontinental_hops']
 
 if G and T:
     for a in tqdm(alg):
@@ -36,3 +38,34 @@ if G and T:
             with open(f, 'wb') as f:
                 pickle.dump(results, f)
     
+    results = {}
+    for a in alg:
+        f = f'{a}-results.pickle'
+        if os.path.exists(f):
+            with open(f, 'rb') as f:
+                results[a] = pickle.load(f)
+                print(f'{a} - loaded')
+                
+    if len(results):
+        complete = []
+        for t in range(len(T)):
+            ok = True
+            for a in alg:
+                ok = ok and bool(results[a][t][1])
+            complete.append(ok)
+
+        _results = {m : {} for m in metrics}
+        for m in metrics:
+        for a in alg:
+            _results[m][a] = [results[a][i][1][m] for i, t in enumerate(complete) if t and m in results[a][i][1]]
+            
+        metrics = metrics + ['avg_intercountry_hops', 'avg_intercontinental_hops', 'avg_geodist']
+
+        _results['avg_intercountry_hops'] = {}
+        _results['avg_intercontinental_hops'] = {}
+        _results['avg_geodist'] = {}
+        for a in alg:
+        #if len(a) == 3:
+        _results['avg_intercountry_hops'][a] = np.array(_results['intercountry_hops'][a]) / np.array(_results['dist'][a])
+        _results['avg_intercontinental_hops'][a] = np.array(_results['intercontinental_hops'][a]) / np.array(_results['dist'][a])
+        _results['avg_geodist'][a] = np.array(_results['geodist'][a]) / np.array(_results['dist'][a])
