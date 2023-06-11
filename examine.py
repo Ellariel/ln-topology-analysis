@@ -24,7 +24,7 @@ metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio', 'feerate',
            'intercontinental_hops', 'intercountry_hops', 
            'avg_geodist', 'avg_ghg', 'avg_intercountry_hops', 'avg_intercontinental_hops']
 
-e = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+e = [-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3] #, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
 
 random.seed(13)
 np.random.seed(13)
@@ -53,15 +53,14 @@ if G and T:
     results = {}
     metric_results = {}
     for _e in tqdm(e):
-        results[_e] = {}
-        for a in tqdm(alg, desc=f'e={_e}', leave=False):
-            _results = ray.get(get_alg_results.remote(G, T, a, _e, global_energy_mix))
-            results[_e][a] = _results
-            
+        results[_e] = {}     
+        _results = ray.get([get_alg_results.remote(G, T, a, _e, global_energy_mix) for a in alg])
+        for i, a in enumerate(alg):
+            results[_e][a] = _results[i]
             f = f'{a}-results.pickle'
             if a in native_alg and not os.path.exists(f):
                 with open(f, 'wb') as f:
-                    pickle.dump(_results, f)
+                    pickle.dump(results[_e][a], f)
                     
         complete = []
         for t in range(len(T)):
