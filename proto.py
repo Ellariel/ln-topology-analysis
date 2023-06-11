@@ -48,7 +48,7 @@ RISK_BIAS = 1
 DEFAULT_FUZZ = 0.05
 FUZZ = random.uniform(-1, 1)
 
-def cost_function(G, u, v, amount, proto_type='LND', global_energy_mix=None):
+def cost_function(G, u, v, amount, proto_type='LND', global_energy_mix=None, e=0.5):
     fee = G.edges[u, v]['fee_base_sat'] + amount * G.edges[u, v]['fee_rate_sat']
     if proto_type == 'LND':
         cost = (amount + fee) * G.edges[u, v]['delay'] * LND_RISK_FACTOR + fee # + calc_bias(G.edges[u, v]['last_failure'])*1e6
@@ -65,19 +65,19 @@ def cost_function(G, u, v, amount, proto_type='LND', global_energy_mix=None):
         
     elif proto_type == 'H(LND)':  
         cost = (amount + fee) * G.edges[u, v]['delay'] * LND_RISK_FACTOR + fee
-        cost += utils.get_ghg_costs(G, u, v, global_energy_mix)
+        cost += utils.get_carbon_costs(G, u, v, global_energy_mix, e=e)
         
     elif proto_type == 'H(CLN)':  
         fee = fee * (1 + DEFAULT_FUZZ * FUZZ)
         cost = (amount + fee) * G.edges[u, v]['delay'] * C_RISK_FACTOR + RISK_BIAS
-        cost += utils.get_ghg_costs(G, u, v, global_energy_mix) * 1e6 # scaled because of higher average value of CLN cost function
+        cost += utils.get_carbon_costs(G, u, v, global_energy_mix, e=e) * 1e6 # scaling because of higher average value of CLN cost function
         
     elif proto_type == 'H(ECL)':  
         n_capacity = 1 - (normalize(G.edges[u, v]['capacity_sat'], MIN_CAP, MAX_CAP))
         n_age = normalize(BLOCK_HEIGHT - G.edges[u, v]['age'], MIN_AGE, MAX_AGE)
         n_delay = normalize(G.edges[u, v]['delay'], MIN_DELAY, MAX_DELAY)
         cost = fee * (n_delay * DELAY_RATIO + n_capacity * CAPACITY_RATIO + n_age * AGE_RATIO) 
-        cost += utils.get_ghg_costs(G, u, v, global_energy_mix)
+        cost += utils.get_carbon_costs(G, u, v, global_energy_mix, e=e)
         '''    
     elif proto_type == 'CYH(LND)':  
         cost = (amount + fee) * G.edges[u, v]['delay'] * LND_RISK_FACTOR + fee
@@ -119,9 +119,9 @@ def cost_function(G, u, v, amount, proto_type='LND', global_energy_mix=None):
     cost = 0 if cost < 0 else cost
     return cost
 
-def get_shortest_path(G, u, v, amount, proto_type='LND', global_energy_mix=None):
+def get_shortest_path(G, u, v, amount, proto_type='LND', global_energy_mix=None, _e=0.5):
     def weight_function(u, v, e):
-      return cost_function(G, u, v, amount, proto_type=proto_type, global_energy_mix=global_energy_mix)
+      return cost_function(G, u, v, amount, proto_type=proto_type, global_energy_mix=global_energy_mix, e=_e)
     try:
       # return list(islice(nx.shortest_simple_paths(G, u, v, weight=weight_function), 5))[random.randint(0, 4)]
       return nx.shortest_path(G, u, v, weight=weight_function)

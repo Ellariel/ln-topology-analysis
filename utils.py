@@ -59,29 +59,32 @@ def get_country_hops(G, path):
 
 # Carbon intensity of electricity (gCO2/kWh)
 # https://github.com/mlco2/codecarbon/blob/master/codecarbon/data/private_infra/global_energy_mix.json
-def get_ghg(G, id, global_energy_mix):
+def get_carbon_intensity(G, id, global_energy_mix):
     country, continent = get_country(G, id), get_continent(G, id)
-    ghg = global_energy_mix[country]['carbon_intensity'] if country in global_energy_mix and 'carbon_intensity' in global_energy_mix[country] else False
-    ghg = global_energy_mix['continent_average'][continent] if not ghg and continent and 'continent_average' in global_energy_mix and continent in global_energy_mix['continent_average'] else ghg
-    ghg = global_energy_mix['world_average'] if not ghg and 'world_average' in global_energy_mix else ghg
-    ghg = 436 if not ghg else ghg
-    return ghg
+    ci = global_energy_mix[country]['carbon_intensity'] if country in global_energy_mix and 'carbon_intensity' in global_energy_mix[country] else False
+    ci = global_energy_mix['continent_average'][continent] if not ci and continent and 'continent_average' in global_energy_mix and continent in global_energy_mix['continent_average'] else ci
+    ci = global_energy_mix['world_average'] if not ci and 'world_average' in global_energy_mix else ci
+    ci = 436 if not ci else ci
+    return ci
 
-def get_total_ghg(G, path, global_energy_mix):
-        ghg = 0
+def get_total_carbon_intensity(G, path, global_energy_mix):
+        ci = 0
         for p in path:
-            ghg += get_ghg(G, p, global_energy_mix)
-        return ghg
+            ci += get_carbon_intensity(G, p, global_energy_mix)
+        return ci
     
-def get_delta_ghg(G, path, global_energy_mix):
-        ghg = 0
-        for i in range(len(path)-1):
-            ghg += get_ghg(G, path[i+1], global_energy_mix) - get_ghg(G, path[i], global_energy_mix)
-        return ghg
+#def get_delta_ghg(G, path, global_energy_mix):
+#        ghg = 0
+#        for i in range(len(path)-1):
+#            ghg += get_ghg(G, path[i+1], global_energy_mix) - get_ghg(G, path[i], global_energy_mix)
+#        return ghg
 
-def get_ghg_costs(G, u, v, global_energy_mix):
-    #return () / 1000
-    return ( ((get_ghg(G, v, global_energy_mix) + get_ghg(G, u, global_energy_mix)) / 2) + (get_ghg(G, v, global_energy_mix) - get_ghg(G, u, global_energy_mix)) ) / 1000
+def get_carbon_costs(G, u, v, global_energy_mix, e=0.5):
+    u = get_carbon_intensity(G, u, global_energy_mix)
+    v = get_carbon_intensity(G, v, global_energy_mix)
+    h = e*(u + v)/2 + (1 - e)*(v - u)
+    return h / 1000 # scaling because of average costs value 
+    #return ( ((get_ghg(G, v, global_energy_mix) + get_ghg(G, u, global_energy_mix)) / 2) + (get_ghg(G, v, global_energy_mix) - get_ghg(G, u, global_energy_mix)) ) / 1000
 
 def get_path_params(G, path, amount, global_energy_mix=None):
     a = amount
@@ -95,9 +98,9 @@ def get_path_params(G, path, amount, global_energy_mix=None):
     return {'path' : p,
             'dist' : len(p),
             'geodist' : get_geodist(G, p),
-            'sum_ghg' : get_total_ghg(G, p, global_energy_mix),
-            'avg_ghg' : get_total_ghg(G, p, global_energy_mix) / len(p),
-            'delta_ghg' : get_delta_ghg(G, p, global_energy_mix),
+            'sum_ghg' : get_total_carbon_intensity(G, p, global_energy_mix),
+            #'avg_ghg' : get_total_ghg(G, p, global_energy_mix) / len(p),
+            #'delta_ghg' : get_delta_ghg(G, p, global_energy_mix),
             'delay' : delay,
             'feeratio' : a / amount,
             'feerate' : a / amount - 1,

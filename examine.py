@@ -19,8 +19,11 @@ with open('global_energy_mix.json', 'r') as f:
     global_energy_mix = json.load(f)
 
 alg = ['LND', 'CLN', 'ECL', 'H(LND)', 'H(CLN)', 'H(ECL)']
-metrics = ['dist', 'geodist', 'avg_geodist', 'sum_ghg', 'avg_ghg', 'delay', 'feeratio', 'feerate',
-           'intercontinental_hops', 'intercountry_hops', 'avg_intercountry_hops', 'avg_intercontinental_hops']
+metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio', 'feerate',
+           'intercontinental_hops', 'intercountry_hops', 
+           'avg_geodist', 'avg_ghg', 'avg_intercountry_hops', 'avg_intercontinental_hops']
+
+e = 0.5
 
 if G and T:
     for a in tqdm(alg):
@@ -29,7 +32,7 @@ if G and T:
             results = []
             for t in tqdm(T, desc=a, leave=False):
                 path = proto.get_shortest_path(G, t[0], t[1], t[2], proto_type=a, 
-                                            global_energy_mix=global_energy_mix)
+                                            global_energy_mix=global_energy_mix, _e=e)
                 if path:
                     r = utils.get_path_params(G, path, t[2], global_energy_mix=global_energy_mix)
                     results.append((t, r))
@@ -44,7 +47,7 @@ if G and T:
         if os.path.exists(f):
             with open(f, 'rb') as f:
                 results[a] = pickle.load(f)
-                print(f'{a} - loaded')
+                #print(f'{a} - loaded')
                 
     if len(results):
         complete = []
@@ -54,18 +57,20 @@ if G and T:
                 ok = ok and bool(results[a][t][1])
             complete.append(ok)
 
-        _results = {m : {} for m in metrics}
+        metric_results = {m : {} for m in metrics}
         for m in metrics:
-        for a in alg:
-            _results[m][a] = [results[a][i][1][m] for i, t in enumerate(complete) if t and m in results[a][i][1]]
+            for a in alg:
+                metric_results[m][a] = [results[a][i][1][m] for i, t in enumerate(complete) if t and m in results[a][i][1]]
             
-        metrics = metrics + ['avg_intercountry_hops', 'avg_intercontinental_hops', 'avg_geodist']
-
-        _results['avg_intercountry_hops'] = {}
-        _results['avg_intercontinental_hops'] = {}
-        _results['avg_geodist'] = {}
+        metric_results['avg_intercountry_hops'] = {}
+        metric_results['avg_intercontinental_hops'] = {}
+        metric_results['avg_geodist'] = {}
+        metric_results['avg_ghg'] = {}
         for a in alg:
-        #if len(a) == 3:
-        _results['avg_intercountry_hops'][a] = np.array(_results['intercountry_hops'][a]) / np.array(_results['dist'][a])
-        _results['avg_intercontinental_hops'][a] = np.array(_results['intercontinental_hops'][a]) / np.array(_results['dist'][a])
-        _results['avg_geodist'][a] = np.array(_results['geodist'][a]) / np.array(_results['dist'][a])
+            metric_results['avg_intercountry_hops'][a] = np.array(metric_results['intercountry_hops'][a]) / np.array(metric_results['dist'][a])
+            metric_results['avg_intercontinental_hops'][a] = np.array(metric_results['intercontinental_hops'][a]) / np.array(metric_results['dist'][a])
+            metric_results['avg_geodist'][a] = np.array(metric_results['geodist'][a]) / np.array(metric_results['dist'][a])
+            metric_results['avg_ghg'][a] = np.array(metric_results['sum_ghg'][a]) / np.array(metric_results['dist'][a])
+            
+        with open(f'metric_results.pickle', 'wb') as f:
+            pickle.dump(metric_results, f)
