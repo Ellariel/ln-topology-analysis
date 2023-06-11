@@ -80,7 +80,8 @@ def get_delta_ghg(G, path, global_energy_mix):
         return ghg
 
 def get_ghg_costs(G, u, v, global_energy_mix):
-    return (get_ghg(G, v, global_energy_mix) - get_ghg(G, u, global_energy_mix)) / 1000
+    #return (get_ghg(G, v, global_energy_mix) - get_ghg(G, u, global_energy_mix)) / 1000
+    return (get_ghg(G, v, global_energy_mix) + get_ghg(G, u, global_energy_mix)) / 2000
 
 def get_path_params(G, path, amount, global_energy_mix=None):
     a = amount
