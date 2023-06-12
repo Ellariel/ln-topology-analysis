@@ -94,5 +94,5 @@ if G and T:
             metric_results[_e]['avg_geodist'][a] = np.array(metric_results[_e]['geodist'][a]) / np.array(metric_results[_e]['dist'][a])
             metric_results[_e]['avg_ghg'][a] = np.array(metric_results[_e]['sum_ghg'][a]) / np.array(metric_results[_e]['dist'][a])
             
-    with open(f'metric_results.pickle', 'wb') as f:
+    with open(os.path.join(results_dir, f'metric_results.pickle'), 'wb') as f:
             pickle.dump(metric_results, f)
