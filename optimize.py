@@ -90,7 +90,7 @@ def get_comparison(G, T, comparison, e, global_energy_mix):
             b = np.mean(metric_results[m][comparison[1]])
             d = (b - a) * 100 / a
             print(f"{m}, ε={'+' if d > 0 else ''}{d:.1f}%")
-            d = np.abs(d) if d < 0 else 1
+            d = -d if d < 0 else 1
             diff.append(d)
         
         return np.prod(diff)
