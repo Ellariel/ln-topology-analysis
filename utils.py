@@ -83,7 +83,7 @@ def get_carbon_costs(G, u, v, global_energy_mix, e=0.5):
     u = get_carbon_intensity(G, u, global_energy_mix)
     v = get_carbon_intensity(G, v, global_energy_mix)
     h = e*(u + v)/2 + (1 - e)*(v - u)
-    return h / 1000 # scaling because of average costs value 
+    return h# / 1000 # scaling because of average costs value 
     #return ( ((get_ghg(G, v, global_energy_mix) + get_ghg(G, u, global_energy_mix)) / 2) + (get_ghg(G, v, global_energy_mix) - get_ghg(G, u, global_energy_mix)) ) / 1000
 
 def get_path_params(G, path, amount, global_energy_mix=None):
