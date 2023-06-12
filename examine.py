@@ -27,7 +27,7 @@ with open(os.path.join(snapshots_dir, 'ln-graph-prepared.pickle'), 'rb') as f:
     f = pickle.load(f)
     G = f['directed_graph']
     print(f'nodes: {len(G.nodes)} edges: {len(G.edges)}')
-    T = f['transactions'][:1000] ####
+    T = f['transactions']#[:1000] ####
     print(f'transactions: {len(T)}')
     
 with open(os.path.join(snapshots_dir, 'global_energy_mix.json'), 'r') as f:
