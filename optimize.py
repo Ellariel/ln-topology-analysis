@@ -127,7 +127,7 @@ if G and T:
             next_point = optimizer.suggest(acq_function)
             target = get_comparison(G, T, c, next_point['e'], global_energy_mix)
             optimizer.register(params=next_point, target=target)
-            print(f"Iteration {i+1}, next point to probe is: {next_point['e']}, corresponded score is: {target}\n")
+            print(f"Iteration {i+1}, a point to probe is: {next_point['e']}, corresponded score is: {target}\n")
             
         o = optimizer.space.min()
         optimal.append((c[1], o))
