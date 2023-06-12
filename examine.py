@@ -12,7 +12,7 @@ with open('ln-graph-prepared.pickle', 'rb') as f:
     f = pickle.load(f)
     G = f['directed_graph']
     print(f'nodes: {len(G.nodes)} edges: {len(G.edges)}')
-    T = f['transactions'][:1000] ####
+    T = f['transactions']#[:1000] ####
     print(f'transactions: {len(T)}')
     
 with open('global_energy_mix.json', 'r') as f:
@@ -24,7 +24,7 @@ metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio', 'feerate',
            'intercontinental_hops', 'intercountry_hops', 
            'avg_geodist', 'avg_ghg', 'avg_intercountry_hops', 'avg_intercontinental_hops']
 
-e = [-0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3] #, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0
+e = list(np.array(range(-10, 11, 1)) / 10)
 
 random.seed(13)
 np.random.seed(13)
