@@ -16,7 +16,7 @@ modified_alg = ['H(LND)', 'H(CLN)', 'H(ECL)']
 metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio', 'feerate',
            'intercontinental_hops', 'intercountry_hops', 
            'avg_geodist', 'avg_ghg', 'avg_intercountry_hops', 'avg_intercontinental_hops']
-train_limit = 1000
+train_limit = 10000
 
 base_dir = './'
 snapshots_dir = os.path.join(base_dir, 'snapshots')
@@ -90,7 +90,7 @@ def get_comparison(G, T, comparison, e, global_energy_mix):
             b = np.mean(metric_results[m][comparison[1]])
             d = (b - a) * 100 / a
             print(f"{m}, ε={'+' if d > 0 else ''}{d:.1f}%")
-            d = -d if d < 0 else 1/d
+            d = -d if d <= 0 else 1/d
             if m == 'avg_ghg' and d > 1:
                 d = 1.3 * d # give carbon intensity higher importance
             diff.append(d)
