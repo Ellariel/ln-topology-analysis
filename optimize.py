@@ -132,7 +132,8 @@ if G and T:
         o = optimizer.space.min()
         optimal.append((c[1], o))
         print(f'Best point for {c[1]}:', o)
-
-    print(optimal)
+    print()
+    for o in optimal:
+        print(f"{o[0]}: {o[1]}")
     
 ray.shutdown()  
