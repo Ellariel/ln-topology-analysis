@@ -92,7 +92,7 @@ def get_comparison(G, T, comparison, e, global_energy_mix):
             print(f"{m}, ε={'+' if d > 0 else ''}{d:.1f}%")
             d = -d if d < 0 else 1
             if m == 'avg_ghg' and d > 1:
-                d = 1.5 * d # give carbon intensity higher importance
+                d = 1.3 * d # give carbon intensity higher importance
             diff.append(d)
         
         return np.prod(diff)
