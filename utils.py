@@ -80,19 +80,12 @@ def get_total_carbon_intensity(G, path, global_energy_mix):
         for p in path:
             ci += get_carbon_intensity(G, p, global_energy_mix)
         return ci
-    
-#def get_delta_ghg(G, path, global_energy_mix):
-#        ghg = 0
-#        for i in range(len(path)-1):
-#            ghg += get_ghg(G, path[i+1], global_energy_mix) - get_ghg(G, path[i], global_energy_mix)
-#        return ghg
 
 def get_carbon_costs(G, u, v, global_energy_mix, e=0.5):
     u = get_carbon_intensity(G, u, global_energy_mix)
     v = get_carbon_intensity(G, v, global_energy_mix)
     h = e*(u + v)/2 + (1 - e)*(v - u)
-    return h# / 1000 # scaling because of average costs value 
-    #return ( ((get_ghg(G, v, global_energy_mix) + get_ghg(G, u, global_energy_mix)) / 2) + (get_ghg(G, v, global_energy_mix) - get_ghg(G, u, global_energy_mix)) ) / 1000
+    return h
 
 def get_path_params(G, path, amount, global_energy_mix=None):
     a = amount
@@ -107,16 +100,12 @@ def get_path_params(G, path, amount, global_energy_mix=None):
             'dist' : len(p),
             'geodist' : get_geodist(G, p),
             'sum_ghg' : get_total_carbon_intensity(G, p, global_energy_mix),
-            #'avg_ghg' : get_total_ghg(G, p, global_energy_mix) / len(p),
-            #'delta_ghg' : get_delta_ghg(G, p, global_energy_mix),
             'delay' : delay,
             'feeratio' : a / amount,
             'feerate' : a / amount - 1,
             'amount' : a,
             'intercontinental_hops' : get_continent_hops(G, p),
             'intercountry_hops' : get_country_hops(G, p),
-            #'start_country': get_country(G, p[0]),
-            #'end_country': get_country(G, p[-1]),
             'continents': get_continents(G, p),
             'countries': get_countries(G, p),
             }
