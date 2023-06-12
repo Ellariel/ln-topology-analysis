@@ -30,6 +30,16 @@ def get_country(G, id):
      c = get_node_location(G, id)
      if c and 'country_code_iso3' in c:
         return c['country_code_iso3'] 
+    
+def get_continents(G, path):
+    loc = [get_continent(G, p) for p in path]
+    loc = drop_none(loc)
+    return loc
+
+def get_countries(G, path):
+    loc = [get_country(G, p) for p in path]
+    loc = drop_none(loc)
+    return loc
 
 def get_geodist(G, path):
         loc = [get_coords(G, p) for p in path]
@@ -40,18 +50,16 @@ def get_geodist(G, path):
         return np.sum(dist)
 
 def get_continent_hops(G, path):
-        loc = [get_continent(G, p) for p in path]
-        loc = drop_none(loc)
         hops = 0
+        loc = get_continents(G, path)
         for c in range(len(loc)-1):
             if loc[c] != loc[c+1]:
                   hops += 1
         return hops
 
 def get_country_hops(G, path):
-        loc = [get_country(G, p) for p in path]
-        loc = drop_none(loc)
         hops = 0
+        loc = get_countries(G, path)
         for c in range(len(loc)-1):
             if loc[c] != loc[c+1]:
                 hops += 1
@@ -107,10 +115,10 @@ def get_path_params(G, path, amount, global_energy_mix=None):
             'amount' : a,
             'intercontinental_hops' : get_continent_hops(G, p),
             'intercountry_hops' : get_country_hops(G, p),
-            'start_country': get_country(G, p[0]),
-            'end_country': get_country(G, p[-1]),
-            'start_continent': get_continent(G, p[0]),
-            'end_continent': get_continent(G, p[-1]),
+            #'start_country': get_country(G, p[0]),
+            #'end_country': get_country(G, p[-1]),
+            'continents': get_continents(G, p),
+            'countries': get_countries(G, p),
             }
 
 def generate_tx(G, transacitons_count=1000, seed=2, centralized=False):

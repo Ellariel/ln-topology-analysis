@@ -37,10 +37,6 @@ with open('global_energy_mix.json', 'r') as f:
 random.seed(13)
 np.random.seed(13)
 
-def _load(f):
-    with open(f, 'rb') as f:
-        return pickle.load(f)    
-
 @ray.remote
 def get_alg_results(G, T, alg, e, global_energy_mix):
     _results = []
