@@ -127,6 +127,6 @@ if G and T:
             target = get_comparison(G, T, c, next_point['e'], global_energy_mix)
             optimizer.register(params=next_point, target=target)
             print(f"Iteration {i+1}, next point to probe is: {next_point['e']}, corresponded score is: {target}\n") 
-        print('Best point:', optimizer.space.min())
+        print(f'Best point for {c[1]}:', optimizer.space.min())
 
 ray.shutdown()  
