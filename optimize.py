@@ -131,7 +131,7 @@ if G and T:
             optimizer.register(params=next_point, target=target)
             print(f"Iteration {i+1}, a point to probe is: {next_point['e']}, corresponded score is: {target}\n")
             
-        o = optimizer.max()
+        o = optimizer.max
         optimal.append((c[1], o))
         print(f'Best point for {c[1]}:', o)
         
