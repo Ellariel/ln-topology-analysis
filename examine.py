@@ -45,9 +45,10 @@ def _load(f):
 def get_alg_results(G, T, alg, e, global_energy_mix):
     _results = []
     if alg in native_alg:
-        f = os.path.join(os.path.join(results_dir, alg), f'{alg}-results.pickle')
+        f = os.path.join(os.path.join(results_dir, alg), f'{alg}_results.pickle')
     else:
-        f = os.path.join(os.path.join(results_dir, alg), f'{alg}-{e}-results.pickle')
+        alg = alg[2:-1]
+        f = os.path.join(os.path.join(results_dir, alg), f'{alg}_{e}_results.pickle')
     if os.path.exists(f):
         with open(f, 'rb') as f:
             _results = pickle.load(f) 
