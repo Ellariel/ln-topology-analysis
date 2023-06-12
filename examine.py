@@ -8,6 +8,22 @@ import utils, proto
 
 ray.init()
 
+native_alg = ['LND', 'CLN', 'ECL']
+alg = native_alg + ['H(LND)', 'H(CLN)', 'H(ECL)']
+metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio', 'feerate',
+           'intercontinental_hops', 'intercountry_hops', 
+           'avg_geodist', 'avg_ghg', 'avg_intercountry_hops', 'avg_intercontinental_hops']
+
+e = list(np.array(range(-10, 11, 1)) / 10)
+
+base_dir = './'
+snapshots_dir = os.path.join(base_dir, 'snapshots')
+results_dir = os.path.join(base_dir, 'results')
+os.makedirs(results_dir, exist_ok=True)
+
+for a in native_alg:
+    os.makedirs(os.path.join(results_dir, a), exist_ok=True)
+    
 with open('ln-graph-prepared.pickle', 'rb') as f:
     f = pickle.load(f)
     G = f['directed_graph']
@@ -17,14 +33,6 @@ with open('ln-graph-prepared.pickle', 'rb') as f:
     
 with open('global_energy_mix.json', 'r') as f:
     global_energy_mix = json.load(f)
-
-native_alg = ['LND', 'CLN', 'ECL']
-alg = native_alg + ['H(LND)', 'H(CLN)', 'H(ECL)']
-metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio', 'feerate',
-           'intercontinental_hops', 'intercountry_hops', 
-           'avg_geodist', 'avg_ghg', 'avg_intercountry_hops', 'avg_intercontinental_hops']
-
-e = list(np.array(range(-10, 11, 1)) / 10)
 
 random.seed(13)
 np.random.seed(13)
@@ -36,9 +44,13 @@ def _load(f):
 @ray.remote
 def get_alg_results(G, T, alg, e, global_energy_mix):
     _results = []
-    f = f'{alg}-results.pickle'
-    if alg in native_alg and os.path.exists(f):
-        _results = _load(f)
+    if alg in native_alg:
+        f = os.path.join(os.path.join(results_dir, a), f'{alg}-results.pickle')
+    else:
+        f = os.path.join(os.path.join(results_dir, a), f'{alg}-{e}-results.pickle')
+    if os.path.exists(f):
+        with open(f, 'rb') as f:
+            _results = pickle.load(f) 
     else:
         for t in T:
             r = None
@@ -47,6 +59,8 @@ def get_alg_results(G, T, alg, e, global_energy_mix):
             if path:
                 r = utils.get_path_params(G, path, t[2], global_energy_mix=global_energy_mix)
             _results.append((t, r)) 
+        with open(f, 'wb') as f:
+            pickle.dump(_results, f)
     return _results
 
 if G and T:
@@ -54,13 +68,9 @@ if G and T:
     metric_results = {}
     for _e in tqdm(e):
         results[_e] = {}     
-        _results = ray.get([get_alg_results.remote(G, T, a, _e, global_energy_mix) for a in alg])
+        _reduced = ray.get([get_alg_results.remote(G, T, a, _e, global_energy_mix) for a in alg])
         for i, a in enumerate(alg):
-            results[_e][a] = _results[i]
-            f = f'{a}-results.pickle'
-            if a in native_alg and not os.path.exists(f):
-                with open(f, 'wb') as f:
-                    pickle.dump(results[_e][a], f)
+            results[_e][a] = _reduced[i]
                     
         complete = []
         for t in range(len(T)):
