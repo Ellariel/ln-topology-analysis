@@ -17,7 +17,13 @@ _continents = {
     'EU': 'Europe'
 }
 
-with open('ln-graph-snapshot.gpickle', 'rb') as f:
+base_dir = './'
+snapshots_dir = os.path.join(base_dir, 'snapshots')
+results_dir = os.path.join(base_dir, 'results')
+os.makedirs(results_dir, exist_ok=True)
+os.makedirs(snapshots_dir, exist_ok=True)
+
+with open(os.path.join(snapshots_dir, 'ln-graph-snapshot.gpickle'), 'rb') as f:
     G = pickle.load(f)
     print(f'nodes: {len(G.nodes)} edges: {len(G.edges)}')
 
@@ -30,8 +36,8 @@ for i in G.nodes:
       except:
         del G.nodes[i]['locations']['country_code_iso3']
       
-if os.path.exists('global_energy_mix.json'):
-    with open('global_energy_mix.json', 'r') as f:
+if os.path.exists(os.path.join(snapshots_dir, 'global_energy_mix.json')):
+    with open(os.path.join(snapshots_dir, 'global_energy_mix.json'), 'r') as f:
       global_energy_mix = json.load(f)
     if not 'world_average' in global_energy_mix:
         world_average = []
@@ -57,7 +63,7 @@ if os.path.exists('global_energy_mix.json'):
           
         global_energy_mix['continent_average'] = continent_average
         global_energy_mix['world_average'] = np.mean(world_average)
-    with open('global_energy_mix.json', 'w') as f:
+    with open(os.path.join(snapshots_dir, 'global_energy_mix.json'), 'w') as f:
         json.dump(global_energy_mix, f)
   
 T = utils.generate_tx(G, 10000)
@@ -65,7 +71,7 @@ for i in T:
     if nx.shortest_path_length(G, i[0], i[1]) <= 1:
         print('path error!')
 
-with open('ln-graph-prepared.pickle', 'wb') as f:
+with open(os.path.join(snapshots_dir, 'ln-graph-prepared.pickle'), 'wb') as f:
         pickle.dump({'directed_graph' : G,
                      'transactions' : T}, f)
         print('ln-graph-prepared.pickle saved.')
