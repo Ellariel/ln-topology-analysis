@@ -61,7 +61,7 @@ def get_alg_results(G, T, alg, e, global_energy_mix):
         #    pickle.dump(_results, f)
     return _results[:train_limit]
 
-def get_comparison(G, T, comparison, e, global_energy_mix):
+def get_comparison(G, T, comparison, e, global_energy_mix, opt_metrics):
         a_results, b_results = ray.get([get_alg_results.remote(G, T, comparison[0], e, global_energy_mix),
                                         get_alg_results.remote(G, T, comparison[1], e, global_energy_mix)])
     
@@ -85,25 +85,38 @@ def get_comparison(G, T, comparison, e, global_energy_mix):
             metric_results['avg_ghg'][a] = np.array(metric_results['sum_ghg'][a]) / np.array(metric_results['dist'][a])
             
         diff = []
-        for m in optimize_metrics:
+        for m in opt_metrics:
             a = np.mean(metric_results[m][comparison[0]])
             b = np.mean(metric_results[m][comparison[1]])
             d = (b - a) * 100 / a
             print(f"{m}, ε={'+' if d > 0 else ''}{d:.1f}%")
             d = -d if d <= 0 else 1/d
-            if m == 'avg_ghg' and d > 1:
+            if m == 'avg_ghg' and d > 1 and comparison[0] != 'CLN':
                 d = 1.3 * d # give carbon intensity higher importance
             diff.append(d)
         
         return np.prod(diff)
-        
-optimization_budget = 50
-bounds = {'e' : (-1.0, 1.0)} # Bounded region of parameter space
-optimize_metrics = ['dist', 'avg_ghg', 'intercountry_hops', 'intercontinental_hops']
-comparisons = [#('LND', 'H(LND)'), # 0.27876
-               ('CLN', 'H(CLN)'), # 0.97148
-               #('ECL', 'H(ECL)'), # 0.35784
-               ]
+
+opt_metrics = ['dist', 'avg_ghg', 'intercountry_hops', 'intercontinental_hops']
+opt_params = { ('LND', 'H(LND)') : # 0.27876
+                    {'optimization_budget' : 30,
+                     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
+                     'kappa' : 2.5, # kappa - the balance between exploration and exploitation
+                     'kind' : 'ei', # Expected Improvement method
+                    },
+                ('CLN', 'H(CLN)') : # 0.97148
+                    {'optimization_budget' : 50,
+                     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
+                     'kappa' : 5,
+                     'kind' : 'ei', 
+                    },
+                ('ECL', 'H(ECL)') : # 0.35784
+                    {'optimization_budget' : 30,
+                     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
+                     'kappa' : 2.5,
+                     'kind' : 'ei', 
+                    },
+            }
 
 random.seed(48)
 np.random.seed(48)
@@ -113,21 +126,21 @@ np.random.seed(48)
 
 optimal = []
 if G and T:
-    for c in comparisons:
+    for c, v in opt_params.items():
         print(c)  
-        acq_function = UtilityFunction(kind = "ei", # Expected Improvement method
-                                       kappa = 5, # kappa - the balance between exploration and exploitation
+        acq_function = UtilityFunction(kind = v['kind'], 
+                                       kappa = v['kappa'],
         ) 
         optimizer = BayesianOptimization(f = None,
-                                        pbounds = bounds,
+                                        pbounds = v['bounds'],
                                         random_state = 48,
         )
         logger = JSONLogger(path=os.path.join(results_dir, f"{c[0]}_optlog.json"))
         optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
         
-        for i in range(optimization_budget):
+        for i in range(v['optimization_budget']):
             next_point = optimizer.suggest(acq_function)
-            target = get_comparison(G, T, c, next_point['e'], global_energy_mix)
+            target = get_comparison(G, T, c, next_point['e'], global_energy_mix, opt_metrics)
             optimizer.register(params=next_point, target=target)
             print(f"Iteration {i+1}, a point to probe is: {next_point['e']}, corresponded score is: {target}\n")
             
