@@ -29,7 +29,7 @@ with open(os.path.join(snapshots_dir, 'ln-graph-prepared.pickle'), 'rb') as f:
     f = pickle.load(f)
     G = f['directed_graph']
     print(f'nodes: {len(G.nodes)} edges: {len(G.edges)}')
-    T = f['transactions'][:train_limit] ####
+    T = f['transactions'][:train_limit]
     print(f'transactions: {len(T)}')
     
 with open(os.path.join(snapshots_dir, 'global_energy_mix.json'), 'r') as f:
@@ -91,7 +91,7 @@ def get_comparison(G, T, comparison, e, global_energy_mix, opt_metrics):
             print(f"{m}, ε={'+' if d > 0 else ''}{d:.1f}%")
             d = -d if d <= 0 else 1/d
             if m == 'avg_ghg' and d > 1:
-                d = 1.3 * d # give carbon intensity higher importance
+                d = 1.3 * d # gives the carbon intensity higher importance
             diff.append(d)
         
         return np.prod(diff)
@@ -99,15 +99,15 @@ def get_comparison(G, T, comparison, e, global_energy_mix, opt_metrics):
 opt_metrics = ['dist', 'avg_ghg', 'intercountry_hops', 'intercontinental_hops']
 opt_params = {  ('CLN', 'H(CLN)') : # 0.97148
                     {'optimization_budget' : 30,
-                     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
+                     'bounds' : {'e' : (-1.0, 1.0)},
                      'kappa' : 7.5,
                      'kind' : 'ei',
                      'xi' : 1e-4,
-                     'init' : 0.3, 
+                     'init' : 0.27, 
                     },
                 ('ECL', 'H(ECL)') : # 0.35784
                     {'optimization_budget' : 30,
-                     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
+                     'bounds' : {'e' : (-1.0, 1.0)},
                      'kappa' : 2.5,
                      'kind' : 'ei',
                      'xi' : 1e-4, 
