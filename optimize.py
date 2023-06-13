@@ -16,7 +16,7 @@ modified_alg = ['H(LND)', 'H(CLN)', 'H(ECL)']
 metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio', 'feerate',
            'intercontinental_hops', 'intercountry_hops', 
            'avg_geodist', 'avg_ghg', 'avg_intercountry_hops', 'avg_intercontinental_hops']
-train_limit = 10000
+train_limit = 100
 
 base_dir = './'
 snapshots_dir = os.path.join(base_dir, 'snapshots')
