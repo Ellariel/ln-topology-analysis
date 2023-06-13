@@ -99,11 +99,11 @@ def get_comparison(G, T, comparison, e, global_energy_mix, opt_metrics):
 
 opt_metrics = ['dist', 'avg_ghg', 'intercountry_hops', 'intercontinental_hops']
 opt_params = {  ('CLN', 'H(CLN)') : # 0.97148
-                    {'optimization_budget' : 50,
+                    {'optimization_budget' : 30,
                      'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
                      'kappa' : 7.5,
                      'kind' : 'ei',
-                     'xi' : 1e-1,
+                     'xi' : 1e-4,
                      'init' : 0.3, 
                     },
                 #('ECL', 'H(ECL)') : # 0.35784
