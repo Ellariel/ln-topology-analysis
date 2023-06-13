@@ -1,4 +1,3 @@
-import networkx as nx
 import numpy as np
 from tqdm import tqdm
 import pickle, json, random, os
@@ -39,7 +38,7 @@ random.seed(13)
 np.random.seed(13)
 
 @ray.remote
-def get_alg_results(G, T, alg, e, global_energy_mix):
+def get_alg_results(G, T, alg, e, global_energy_mix, save=True):
     _results = []
     if alg in native_alg:
         f = os.path.join(os.path.join(results_dir, alg), f'{alg}_results.pickle')
@@ -56,8 +55,9 @@ def get_alg_results(G, T, alg, e, global_energy_mix):
             if path:
                 r = utils.get_path_params(G, path, t[2], global_energy_mix=global_energy_mix)
             _results.append((t, r)) 
-        with open(f, 'wb') as f:
-            pickle.dump(_results, f)
+        if save:
+            with open(f, 'wb') as f:
+                pickle.dump(_results, f)
     return _results
 
 if G and T and not os.path.exists(os.path.join(results_dir, f'metric_results.pickle')):

@@ -1,6 +1,4 @@
-import networkx as nx
 import numpy as np
-from tqdm import tqdm
 import pickle, json, random, os
 import ray
 # see https://github.com/bayesian-optimization/BayesianOptimization
@@ -40,7 +38,7 @@ with open(os.path.join(snapshots_dir, 'global_energy_mix.json'), 'r') as f:
 ray.init()
 
 @ray.remote
-def get_alg_results(G, T, alg, e, global_energy_mix):
+def get_alg_results(G, T, alg, e, global_energy_mix, save=False):
     _results = []
     if alg in native_alg:
         f = os.path.join(os.path.join(results_dir, alg), f'{alg}_results.pickle')
@@ -57,8 +55,9 @@ def get_alg_results(G, T, alg, e, global_energy_mix):
             if path:
                 r = utils.get_path_params(G, path, t[2], global_energy_mix=global_energy_mix)
             _results.append((t, r)) 
-        #with open(f, 'wb') as f:
-        #    pickle.dump(_results, f)
+        if save:
+            with open(f, 'wb') as f:
+                pickle.dump(_results, f)
     return _results[:train_limit]
 
 def get_comparison(G, T, comparison, e, global_energy_mix, opt_metrics):
@@ -91,7 +90,7 @@ def get_comparison(G, T, comparison, e, global_energy_mix, opt_metrics):
             d = (b - a) * 100 / a
             print(f"{m}, ε={'+' if d > 0 else ''}{d:.1f}%")
             d = -d if d <= 0 else 1/d
-            if m == 'avg_ghg' and d > 1 and comparison[0] != 'CLN':
+            if m == 'avg_ghg' and d > 1:
                 d = 1.3 * d # give carbon intensity higher importance
             diff.append(d)
         
@@ -124,9 +123,6 @@ opt_params = {  ('CLN', 'H(CLN)') : # 0.97148
 
 random.seed(48)
 np.random.seed(48)
-
-# results = get_comparison(G, T, comparisons[0], 0.3, global_energy_mix)
-# print(results)
 
 optimal = []
 if G and T:
