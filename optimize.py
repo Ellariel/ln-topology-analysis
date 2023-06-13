@@ -106,20 +106,20 @@ opt_params = {  ('CLN', 'H(CLN)') : # 0.97148
                      'xi' : 1e-4,
                      'init' : 0.3, 
                     },
-                #('ECL', 'H(ECL)') : # 0.35784
-                #    {'optimization_budget' : 30,
-                #     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
-                #     'kappa' : 2.5,
-                #     'kind' : 'ei',
-                #     'xi' : 1e-4, 
-                #    },
-                #('LND', 'H(LND)') : # 0.27876
-                #    {'optimization_budget' : 30,
-                #     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
-                #     'kappa' : 2.5, # kappa - the balance between exploration and exploitation
-                #     'kind' : 'ei', # Expected Improvement method
-                #     'xi' : 1e-4, 
-                #    },
+                ('ECL', 'H(ECL)') : # 0.35784
+                    {'optimization_budget' : 30,
+                     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
+                     'kappa' : 2.5,
+                     'kind' : 'ei',
+                     'xi' : 1e-4, 
+                    },
+                ('LND', 'H(LND)') : # 0.27876
+                    {'optimization_budget' : 30,
+                     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
+                     'kappa' : 2.5, # kappa - the balance between exploration and exploitation
+                     'kind' : 'ei', # Expected Improvement method
+                     'xi' : 1e-4, 
+                    },
             }
 
 random.seed(48)
