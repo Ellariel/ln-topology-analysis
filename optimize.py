@@ -11,9 +11,9 @@ import utils, proto
 
 native_alg = ['LND', 'CLN', 'ECL']
 modified_alg = ['H(LND)', 'H(CLN)', 'H(ECL)']
-metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio', 'feerate',
+metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio',# 'feerate',
            'intercontinental_hops', 'intercountry_hops', 
-           'avg_geodist', 'avg_ghg', 'avg_intercountry_hops', 'avg_intercontinental_hops']
+           'avg_geodist', 'avg_ghg']
 train_limit = 10000
 
 base_dir = './'
@@ -73,13 +73,9 @@ def get_comparison(G, T, comparison, e, global_energy_mix, opt_metrics):
             metric_results[m][comparison[0]] = [a_results[i][1][m] for i, t in enumerate(complete) if t and m in a_results[i][1]]
             metric_results[m][comparison[1]] = [b_results[i][1][m] for i, t in enumerate(complete) if t and m in b_results[i][1]]
             
-        metric_results['avg_intercountry_hops'] = {}
-        metric_results['avg_intercontinental_hops'] = {}
         metric_results['avg_geodist'] = {}
         metric_results['avg_ghg'] = {}
         for a in comparison:
-            metric_results['avg_intercountry_hops'][a] = np.array(metric_results['intercountry_hops'][a]) / np.array(metric_results['dist'][a])
-            metric_results['avg_intercontinental_hops'][a] = np.array(metric_results['intercontinental_hops'][a]) / np.array(metric_results['dist'][a])
             metric_results['avg_geodist'][a] = np.array(metric_results['geodist'][a]) / np.array(metric_results['dist'][a])
             metric_results['avg_ghg'][a] = np.array(metric_results['sum_ghg'][a]) / np.array(metric_results['dist'][a])
             

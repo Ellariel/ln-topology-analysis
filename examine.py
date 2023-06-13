@@ -7,9 +7,9 @@ import utils, proto
 
 native_alg = ['LND', 'CLN', 'ECL']
 modified_alg = ['H(LND)', 'H(CLN)', 'H(ECL)']
-metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio', 'feerate',
-           'intercontinental_hops', 'intercountry_hops', 'continents', 'countries',
-           'avg_geodist', 'avg_ghg', 'avg_intercountry_hops', 'avg_intercontinental_hops']
+metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio',# 'feerate',
+           'intercontinental_hops', 'intercountry_hops', 
+           'continents', 'countries', 'avg_geodist', 'avg_ghg']
 
 e = list(np.array(range(-10, 11, 1)) / 10) + [0.27876, 0.25556, 0.35784]
 
@@ -91,13 +91,9 @@ if G and T and not os.path.exists(os.path.join(results_dir, f'metric_results.pic
             for a in modified_alg:
                 metric_results[_e][m][a] = [results[_e][a][i][1][m] for i, t in enumerate(complete) if t and m in results[_e][a][i][1]]
             
-        metric_results[_e]['avg_intercountry_hops'] = {}
-        metric_results[_e]['avg_intercontinental_hops'] = {}
         metric_results[_e]['avg_geodist'] = {}
         metric_results[_e]['avg_ghg'] = {}
         for a in native_alg + modified_alg:
-            metric_results[_e]['avg_intercountry_hops'][a] = np.array(metric_results[_e]['intercountry_hops'][a]) / np.array(metric_results[_e]['dist'][a])
-            metric_results[_e]['avg_intercontinental_hops'][a] = np.array(metric_results[_e]['intercontinental_hops'][a]) / np.array(metric_results[_e]['dist'][a])
             metric_results[_e]['avg_geodist'][a] = np.array(metric_results[_e]['geodist'][a]) / np.array(metric_results[_e]['dist'][a])
             metric_results[_e]['avg_ghg'][a] = np.array(metric_results[_e]['sum_ghg'][a]) / np.array(metric_results[_e]['dist'][a])
             
