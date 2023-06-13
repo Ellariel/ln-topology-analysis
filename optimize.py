@@ -103,7 +103,8 @@ opt_params = {  ('CLN', 'H(CLN)') : # 0.97148
                      'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
                      'kappa' : 7.5,
                      'kind' : 'ei',
-                     'xi' : 1e-1, 
+                     'xi' : 1e-1,
+                     'init' : 0.3, 
                     },
                 #('ECL', 'H(ECL)') : # 0.35784
                 #    {'optimization_budget' : 30,
@@ -143,7 +144,10 @@ if G and T:
         optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
         
         for i in range(v['optimization_budget']):
-            next_point = optimizer.suggest(acq_function)
+            if i == 0 and 'init' in v:
+                next_point = v['init']
+            else:
+                next_point = optimizer.suggest(acq_function)
             target = get_comparison(G, T, c, next_point['e'], global_energy_mix, opt_metrics)
             optimizer.register(params=next_point, target=target)
             print(f"Iteration {i+1}, a point to probe is: {next_point['e']}, corresponded score is: {target}\n")
