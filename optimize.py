@@ -116,7 +116,7 @@ if G and T:
     for c in comparisons:
         print(c)  
         acq_function = UtilityFunction(kind = "ei", # Expected Improvement method
-                                       kappa = 2.5, # kappa - the balance between exploration and exploitation
+                                       kappa = 5, # kappa - the balance between exploration and exploitation
         ) 
         optimizer = BayesianOptimization(f = None,
                                         pbounds = bounds,
