@@ -97,12 +97,12 @@ def get_comparison(G, T, comparison, e, global_energy_mix):
         
         return np.prod(diff)
         
-optimization_budget = 30
+optimization_budget = 50
 bounds = {'e' : (-1.0, 1.0)} # Bounded region of parameter space
 optimize_metrics = ['dist', 'avg_ghg', 'intercountry_hops', 'intercontinental_hops']
-comparisons = [('LND', 'H(LND)'), # 0.27876
+comparisons = [#('LND', 'H(LND)'), # 0.27876
                ('CLN', 'H(CLN)'), # 0.97148
-               ('ECL', 'H(ECL)'), # 0.35784
+               #('ECL', 'H(ECL)'), # 0.35784
                ]
 
 random.seed(48)
