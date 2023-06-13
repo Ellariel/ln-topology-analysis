@@ -142,10 +142,10 @@ if G and T:
         )
         logger = JSONLogger(path=os.path.join(results_dir, f"{c[0]}_optlog.json"))
         optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
-        
+        next_point = {}
         for i in range(v['optimization_budget']):
             if i == 0 and 'init' in v:
-                next_point = v['init']
+                next_point.update({'e': v['init']})
             else:
                 next_point = optimizer.suggest(acq_function)
             target = get_comparison(G, T, c, next_point['e'], global_energy_mix, opt_metrics)
