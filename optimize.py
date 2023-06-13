@@ -97,7 +97,7 @@ def get_comparison(G, T, comparison, e, global_energy_mix, opt_metrics):
         return np.prod(diff)
 
 opt_metrics = ['dist', 'avg_ghg', 'intercountry_hops', 'intercontinental_hops']
-opt_params = {  ('CLN', 'H(CLN)') : # 0.97148
+opt_params = {  ('CLN', 'H(CLN)') : # 0.25556
                     {'optimization_budget' : 30,
                      'bounds' : {'e' : (-1.0, 1.0)},
                      'kappa' : 7.5,

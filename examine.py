@@ -11,7 +11,7 @@ metrics = ['dist', 'geodist', 'sum_ghg', 'delay', 'feeratio', 'feerate',
            'intercontinental_hops', 'intercountry_hops', 'continents', 'countries',
            'avg_geodist', 'avg_ghg', 'avg_intercountry_hops', 'avg_intercontinental_hops']
 
-e = list(np.array(range(-10, 11, 1)) / 10) + [0.27876, 0.97148, 0.35784]
+e = list(np.array(range(-10, 11, 1)) / 10) + [0.27876, 0.25556, 0.35784]
 
 base_dir = './'
 snapshots_dir = os.path.join(base_dir, 'snapshots')
