@@ -103,5 +103,7 @@ if G and T and not os.path.exists(os.path.join(results_dir, f'metric_results.pic
             
     with open(os.path.join(results_dir, f'metric_results.pickle'), 'wb') as f:
             pickle.dump(metric_results, f)
+else:
+    print('There is an issue with data or metric_results.pickle is already exists.')
             
 ray.shutdown()
