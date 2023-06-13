@@ -98,24 +98,24 @@ def get_comparison(G, T, comparison, e, global_energy_mix, opt_metrics):
         return np.prod(diff)
 
 opt_metrics = ['dist', 'avg_ghg', 'intercountry_hops', 'intercontinental_hops']
-opt_params = { ('LND', 'H(LND)') : # 0.27876
-                    {'optimization_budget' : 30,
-                     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
-                     'kappa' : 2.5, # kappa - the balance between exploration and exploitation
-                     'kind' : 'ei', # Expected Improvement method
-                    },
-                ('CLN', 'H(CLN)') : # 0.97148
+opt_params = {  ('CLN', 'H(CLN)') : # 0.97148
                     {'optimization_budget' : 50,
                      'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
-                     'kappa' : 5,
+                     'kappa' : 7.5,
                      'kind' : 'ei', 
                     },
-                ('ECL', 'H(ECL)') : # 0.35784
-                    {'optimization_budget' : 30,
-                     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
-                     'kappa' : 2.5,
-                     'kind' : 'ei', 
-                    },
+                #('ECL', 'H(ECL)') : # 0.35784
+                #    {'optimization_budget' : 30,
+                #     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
+                #     'kappa' : 2.5,
+                #     'kind' : 'ei', 
+                #    },
+                #('LND', 'H(LND)') : # 0.27876
+                #    {'optimization_budget' : 30,
+                #     'bounds' : {'e' : (-1.0, 1.0)}, # Bounded region of parameter space
+                #     'kappa' : 2.5, # kappa - the balance between exploration and exploitation
+                #     'kind' : 'ei', # Expected Improvement method
+                #    },
             }
 
 random.seed(48)
