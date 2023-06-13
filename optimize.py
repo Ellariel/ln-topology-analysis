@@ -134,6 +134,7 @@ if G and T:
         optimizer = BayesianOptimization(f = None,
                                         pbounds = v['bounds'],
                                         random_state = 48,
+                                        allow_duplicate_points=True,
         )
         logger = JSONLogger(path=os.path.join(results_dir, f"{c[0]}_optlog.json"))
         optimizer.subscribe(Events.OPTIMIZATION_STEP, logger)
