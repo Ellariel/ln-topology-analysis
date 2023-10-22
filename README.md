@@ -1,6 +1,7 @@
-## ln-topology-analysis
+## Reducing CO2 Emissions in a Peer-to-Peer Distributed Payment Network: Does Geography Matter in the Lightning Network?
 
 ## Working paper
+* Under development
 
 ## Sources and References
 * Experiments were run on a snapshot of the Lightning Network obtained from [(Decker, 2020)](https://github.com/lnresearch/topology).
