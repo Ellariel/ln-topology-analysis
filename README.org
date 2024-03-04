@@ -1,0 +1,31 @@
+#+OPTIONS: toc:nil
+
+#+begin_abstract
+
+#+end_abstract
+
+* Reducing CO₂ emissions in a peer-to-peer distributed payment network: Does geography matter in the lightning network? 
+
+** Journal paper
+*** Plain
+Danila Valko and Daniel Kudenko (2024). Reducing CO₂ emissions in a peer-to-peer distributed payment network: Does geography matter in the lightning network? Computer Networks, vol. 243, a. 110297, https://doi.org/10.1016/j.comnet.2024.110297
+
+*** BibTeX
+#+begin_src bibtex
+@article{Valko2024,
+   author = {Danila Valko and Daniel Kudenko},
+   doi = {10.1016/j.comnet.2024.110297},
+   issn = {13891286},
+   journal = {Computer Networks},
+   month = {4},
+   pages = {110297},
+   title = {Reducing CO₂ emissions in a peer-to-peer distributed payment network: Does geography matter in the lightning network?},
+   volume = {243},
+   url = {https://linkinghub.elsevier.com/retrieve/pii/S1389128624001294},
+   year = {2024},
+}
+#+end_src
+
+** Sources and References
+- Experiments were run on a snapshot of the Lightning Network obtained from [[https://github.com/lnresearch/topology][(Decker, 2020)]].
+- The Lightning Network pathfinding algorithms were implemented based on the cost functions description from [[https://repository.tudelft.nl/islandora/object/uuid%3A0bf2a223-d3b4-401c-967c-c11c300df5df][(Andreescu, Roos & Ersoy, 2021)]] and [[https://ieeexplore.ieee.org/document/9566199][(Kumble & Roos, 2021)]].
