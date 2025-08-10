@@ -13,15 +13,15 @@ Danila Valko and Daniel Kudenko (2024). Reducing CO₂ emissions in a peer-to-pe
 *** BibTeX
 #+begin_src bibtex
 @article{ValkoKudenko2024,
-   author = {Danila Valko and Daniel Kudenko},
-   title = {Reducing CO₂ emissions in a peer-to-peer distributed payment network: Does geography matter in the lightning network?},
-   journal = {Computer Networks},
-   year = {2024},
-   month = {4},
-   volume = {243},
-   pages = {},
-   issn = {13891286},
-   doi = {10.1016/j.comnet.2024.110297},
+author = {Danila Valko and Daniel Kudenko},
+title = {Reducing CO₂ emissions in a peer-to-peer distributed payment network: Does geography matter in the lightning network?},
+journal = {Computer Networks},
+year = {2024},
+month = {4},
+volume = {243},
+pages = {},
+issn = {13891286},
+doi = {10.1016/j.comnet.2024.110297},
 }
 #+end_src
 
